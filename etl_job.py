@@ -1,82 +1,97 @@
 """
-Simple ETL Script
------------------
-Reads: employees_input.csv
-Transforms: adds bonus column
-Writes: employees_output.csv (all data with bonus)
-        high_earners.csv (employees with salary > 70000)
-        highest_salary.csv (employees with salary between 70000 and 80000)
+Main ETL Job
 """
 
 import pandas as pd
-
-# ---------- Step 1: Define file paths ----------
-INPUT_FILE = "employees_input.csv"
-OUTPUT_FILE_ALL = "employees_output.csv"
-OUTPUT_FILE_HIGH = "high_earners.csv"
-OUTPUT_FILE_HIGHEST = "highest_salary.csv"
+import sqlite3
+import os
+from transformations import apply_all_transformations
 
 
-# ---------- Step 2: Read the input file ----------
-def read_data(file_path):
-    print(f"Reading file: {file_path}")
+# ---------- Configuration ----------
+INPUT_FILE = "data/employees_input.csv"
+DB_FILE = "data/employees.db"
+SQL_FOLDER = "sql"
+OUTPUT_FOLDER = "output"
+
+
+def extract(file_path):
+    print(f"\n[EXTRACT] Reading {file_path}")
     df = pd.read_csv(file_path)
-    print(f"Total records read: {len(df)}")
+    print(f"  Records read: {len(df)}")
     return df
 
 
-# ---------- Step 3: Transform the data ----------
-def transform_data(df):
-    print("Transforming data...")
-
-    # Add a bonus column (10% of salary)
-    df["bonus"] = df["salary"] * 0.10
-
-    # Add total compensation column
-    df["total_compensation"] = df["salary"] + df["bonus"]
-
-    # Convert join_date to datetime and extract year
-    df["join_date"] = pd.to_datetime(df["join_date"])
-    df["join_year"] = df["join_date"].dt.year
-
-    print("Transformation complete.")
+def transform(df):
+    print(f"\n[TRANSFORM]")
+    df = apply_all_transformations(df)
+    print(f"  Final columns: {list(df.columns)}")
     return df
 
 
-# ---------- Step 4: Write the output files ----------
-def write_data(df, output_path):
+def load_to_db(df, db_file, table_name="employees"):
+    print(f"\n[LOAD] Writing to SQLite DB: {db_file}")
+    conn = sqlite3.connect(db_file)
+    df.to_sql(table_name, conn, if_exists="replace", index=False)
+    conn.close()
+    print(f"  Loaded {len(df)} rows into table '{table_name}'")
+
+
+def read_sql_file(sql_path):
+    with open(sql_path, "r") as f:
+        return f.read()
+
+
+def run_query(db_file, sql_query):
+    conn = sqlite3.connect(db_file)
+    result = pd.read_sql_query(sql_query, conn)
+    conn.close()
+    return result
+
+
+def write_output(df, output_path):
     df.to_csv(output_path, index=False)
-    print(f"Written {len(df)} records to: {output_path}")
+    print(f"  Saved {len(df)} rows -> {output_path}")
 
 
-# ---------- Step 5: Main flow ----------
-def main():
-    print("=" * 50)
-    print("Starting ETL Job")
-    print("=" * 50)
+def run_all_reports(db_file):
+    print(f"\n[REPORTS] Running SQL queries from {SQL_FOLDER}/")
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-    # Read
-    df = read_data(INPUT_FILE)
-
-    # Transform
-    df_transformed = transform_data(df)
-
-    # Write all employees to output file
-    write_data(df_transformed, OUTPUT_FILE_ALL)
-
-    # Filter and write high earners (salary > 70000)
-    high_earners = df_transformed[df_transformed["salary"] > 70000]
-    write_data(high_earners, OUTPUT_FILE_HIGH)
-
-    # Filter and write highest salary band (between 70000 and 80000)
-    highest_salary = df_transformed[
-        (df_transformed["salary"] >= 70000) & (df_transformed["salary"] <= 80000)
+    reports = [
+        ("high_earners.sql", "high_earners.csv"),
+        ("department_summary.sql", "department_summary.csv"),
+        ("tenure_analysis.sql", "tenure_analysis.csv"),
     ]
-    write_data(highest_salary, OUTPUT_FILE_HIGHEST)
 
-    print("=" * 50)
-    print("ETL Job Completed Successfully")
-    print("=" * 50)
+    for sql_file, out_csv in reports:
+        sql_path = os.path.join(SQL_FOLDER, sql_file)
+        out_path = os.path.join(OUTPUT_FOLDER, out_csv)
+        print(f"\n  Running: {sql_file}")
+        query = read_sql_file(sql_path)
+        result = run_query(db_file, query)
+        write_output(result, out_path)
+
+
+def main():
+    print("=" * 60)
+    print("ETL JOB STARTED")
+    print("=" * 60)
+
+    df = extract(INPUT_FILE)
+    df = transform(df)
+
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+    full_output = os.path.join(OUTPUT_FOLDER, "employees_transformed.csv")
+    df.to_csv(full_output, index=False)
+    print(f"\n[OUTPUT] Full transformed data -> {full_output}")
+
+    load_to_db(df, DB_FILE)
+    run_all_reports(DB_FILE)
+
+    print("\n" + "=" * 60)
+    print("ETL JOB COMPLETED SUCCESSFULLY")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
