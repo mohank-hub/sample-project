@@ -12,7 +12,7 @@ import os
 
 # ---------- Step 1: Define file paths ----------
 INPUT_FILE = "employees_input.csv"
-OUTPUT_FILE_ALL = "employees_output.csv"
+OUTPUT_FILE_ALL = "EMP_output.csv"
 OUTPUT_FILE_HIGH = "high_earners.csv"
 
 
