@@ -1,0 +1,7 @@
+emp_id,name,department,salary,join_date,bonus,total_compensation,join_year
+101,Rajesh Kumar,Engineering,75000,2020-03-15,7500.0,82500.0,2020
+102,Priya Sharma,Data Science,85000,2019-07-22,8500.0,93500.0,2019
+105,Vikram Singh,Data Science,95000,2018-11-30,9500.0,104500.0,2018
+107,Mohan Kotha,Engineering,90000,2017-08-05,9000.0,99000.0,2017
+109,Rohit Verma,Engineering,80000,2019-04-25,8000.0,88000.0,2019
+110,Deepa Iyer,Data Science,88000,2021-09-12,8800.0,96800.0,2021

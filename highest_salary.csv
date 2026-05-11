@@ -1,0 +1,4 @@
+emp_id,name,department,salary,join_date,bonus,total_compensation,join_year
+101,Rajesh Kumar,Engineering,75000,2020-03-15,7500.0,82500.0,2020
+108,Kavya Nair,Finance,70000,2020-12-01,7000.0,77000.0,2020
+109,Rohit Verma,Engineering,80000,2019-04-25,8000.0,88000.0,2019
