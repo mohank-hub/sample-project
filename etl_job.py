@@ -2,18 +2,19 @@
 Simple ETL Script
 -----------------
 Reads: employees_input.csv
-Transforms: adds bonus column, filters high earners
+Transforms: adds bonus column
 Writes: employees_output.csv (all data with bonus)
-        high_earners.csv (only employees earning > 70000)
+        high_earners.csv (employees with salary > 70000)
+        highest_salary.csv (employees with salary between 70000 and 80000)
 """
 
 import pandas as pd
-import os
 
 # ---------- Step 1: Define file paths ----------
 INPUT_FILE = "employees_input.csv"
-OUTPUT_FILE_ALL = "EMP_output.csv"
-OUTPUT_FILE_HIGH = "high_earners_7K.csv"
+OUTPUT_FILE_ALL = "employees_output.csv"
+OUTPUT_FILE_HIGH = "high_earners.csv"
+OUTPUT_FILE_HIGHEST = "highest_salary.csv"
 
 
 # ---------- Step 2: Read the input file ----------
@@ -66,6 +67,12 @@ def main():
     # Filter and write high earners (salary > 70000)
     high_earners = df_transformed[df_transformed["salary"] > 70000]
     write_data(high_earners, OUTPUT_FILE_HIGH)
+
+    # Filter and write highest salary band (between 70000 and 80000)
+    highest_salary = df_transformed[
+        (df_transformed["salary"] >= 70000) & (df_transformed["salary"] <= 80000)
+    ]
+    write_data(highest_salary, OUTPUT_FILE_HIGHEST)
 
     print("=" * 50)
     print("ETL Job Completed Successfully")
