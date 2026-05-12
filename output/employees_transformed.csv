@@ -1,0 +1,11 @@
+emp_id,name,department,salary,join_date,bonus,total_compensation,join_year,tenure_years,salary_band
+101,Rajesh Kumar,Engineering,75000,2020-03-15,7500.0,82500.0,2020,6.2,Mid
+102,Priya Sharma,Data Science,85000,2019-07-22,8500.0,93500.0,2019,6.8,High
+103,Amit Patel,Engineering,65000,2021-01-10,6500.0,71500.0,2021,5.3,Low
+104,Sneha Reddy,Marketing,55000,2022-05-18,5500.0,60500.0,2022,4.0,Low
+105,Vikram Singh,Data Science,95000,2018-11-30,9500.0,104500.0,2018,7.4,High
+106,Anjali Gupta,HR,50000,2023-02-14,5000.0,55000.0,2023,3.2,Low
+107,Mohan Kotha,Engineering,90000,2017-08-05,9000.0,99000.0,2017,8.8,High
+108,Kavya Nair,Finance,70000,2020-12-01,7000.0,77000.0,2020,5.4,Mid
+109,Rohit Verma,Engineering,80000,2019-04-25,8000.0,88000.0,2019,7.0,Mid
+110,Deepa Iyer,Data Science,88000,2021-09-12,8800.0,96800.0,2021,4.7,High

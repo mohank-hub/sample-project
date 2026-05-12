@@ -1,0 +1,6 @@
+department,employee_count,avg_salary,min_salary,max_salary,total_dept_compensation
+Data Science,3,89333.33,85000,95000,294800.0
+Engineering,4,77500.0,65000,90000,341000.0
+Finance,1,70000.0,70000,70000,77000.0
+Marketing,1,55000.0,55000,55000,60500.0
+HR,1,50000.0,50000,50000,55000.0
